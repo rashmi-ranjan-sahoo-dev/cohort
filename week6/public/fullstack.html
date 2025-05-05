@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Authentication webside</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.7/axios.min.js"></script>
+    <style>
+        button{
+            background-color: navy;
+            color: aliceblue;
+            border-radius: 1em;
+            margin-left: 7vw;
+            margin-top: 1vh;
+        }
+        button:active{
+            font-size:1.5vh;
+        }
+        .signin-msg,.signup-msg{
+            margin-left: 200px;
+        }
+       .user-infermation{
+          visibility:hidden;
+        }
+        .user-data{
+          visibility:visible;
+        }
+        
+    </style>
+</head>
+<body>
+    <div class="user-data">
+    <div>Signup:
+        <input type="text" name="username" placeholder="username" class="signup-text">
+        <input type="password" name="password" placeholder="password"  class="signup-password">
+        <br>
+        <button onclick="signup()">Submit</button>
+        <div class="signup-msg"></div>
+    </div>
+    <br>
+    <div>Signin:
+        <input type="text" name="username" placeholder="username" class="signin-text">
+        <input type="password" name="password" placeholder="password"  class="signin-password">
+        <br>
+        <button onclick="signin()">Submit</button>
+        <div class="signin-msg"></div>
+    </div>
+    </div>
+    <br>
+    <div class="user-infermation">
+    User information:
+    <div class="user"></div>
+    <button class="logout">Logout</button>
+    </div>
+</body>
+<script>
+    async function signup() {
+        const username = document.querySelector(".signup-text").value;
+        const password = document.querySelector(".signup-password").value;
+      await axios.post("http://localhost:3000/signup",{
+        username:username,
+        password:password
+      })
+      document.querySelector(".signup-msg").innerHTML = "you are successfuly signup";
+    }
+    function signin(){
+        alert("hi there")
+    }
+
+    async function signin() {
+        const username = document.querySelector(".signin-text").value;
+        const password = document.querySelector(".signin-password").value;
+     const response = await axios.post("http://localhost:3000/signin",{
+        username:username,
+        password:password
+      })
+      localStorage.setItem("token",response.data.token)
+      document.querySelector(".signin-msg").innerHTML = "you are successfuly signin";
+      document.querySelector(".user-infermation").style.visibility = "visible";
+      document.querySelector(".user-data").style.visibility = "hidden";
+      getuserInformation()
+    }
+    
+    async function getuserInformation() {       
+         
+        const response = await axios.get("http://localhost:3000/me",{
+              headers:{
+                token:localStorage.getItem("token")
+              }
+        })
+        document.querySelector(".user").innerHTML ="username:"+ response.data.username +"    password:"+ response.data.password
+// document.querySelector(".user").innerHTML = "rinku";   
+    }
+    getuserInformation()
+
+    document.querySelector(".logout").addEventListener("click",()=>{
+             localStorage.removeItem("token");
+             document.querySelector(".user-infermation").style.visibility = "hidden";
+             document.querySelector(".user-data").style.visibility = "visible";
+    }
+    )
+</script>
+</html>

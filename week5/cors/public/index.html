@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>find sum</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.6/axios.min.js"></script></head>
+<body>
+    <input type="text" placeholder="First Value" class="first">
+    <input type="text" placeholder="second Value" class="second">
+    <button id="sum">find sum</button>
+    <div class="div"></div>
+    <script>
+        let div = document.getElementsByClassName("div")[0];
+        let btn = document.getElementById("sum");
+        async function connectBackend(){
+            let a = document.querySelector(".first").value;
+            let b = document.querySelector(".second").value;
+           const result =  await axios.post("http://localhost:3000/sum",{
+                  a:a,
+                  b:b
+           });
+        //    console.log(result.data);
+         div.innerHTML = "ans is :"+ result.data.ans;
+        }
+        btn.addEventListener('click',connectBackend);
+    </script>
+</body>
+</html>

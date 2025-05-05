@@ -1,0 +1,17 @@
+{
+  "name": "week5",
+  "version": "1.0.0",
+  "main": "crte_http_server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "cros": "^1.0.1",
+    "express": "^4.21.0"
+  }
+}

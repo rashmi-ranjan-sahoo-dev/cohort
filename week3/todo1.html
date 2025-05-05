@@ -1,0 +1,63 @@
+<html>
+<head>
+  <title>todo using state and component</title>
+</head>
+<body>
+    <input type="text" placeholder="add todo">
+    <button onclick="addtodo()">add</button>
+    <button onclick="deleteFirst()">Del First</button>
+    <button onclick="deleteLast()">Del last</button>
+    <div class="todos"></div>
+  </body>
+  <script>
+    let todos = [];
+    function addtodo ()
+    {
+      todos.push({
+        title:document.querySelector("input").value
+      });
+      render();
+    }
+    function deleteFirst()
+    {
+      todos.splice(0,1);
+      render();
+    }
+
+    function deleteLast()
+    {
+      todos.splice(todos.length-1,1);
+      render();
+    }
+
+    function createTodoComponent(todo) {
+    let divele = document.createElement("div");
+    let h1ele = document.createElement("h1");
+    let delbtn = document.createElement("button");
+    delbtn.innerHTML = "Delete";
+    h1ele.innerHTML = todo.title;
+    divele.appendChild(h1ele);
+    divele.appendChild(delbtn);
+
+    delbtn.addEventListener('click', () => {
+        let index = Array.from(divele.parentNode.children).indexOf(divele);
+        todos.splice(index, 1);
+        divele.parentNode.removeChild(divele);
+
+    });
+
+    return divele;
+}
+    function render(){
+      document.querySelector(".todos").innerHTML = "";
+      for( i = 0 ; i< todos.length ; i++)
+    {
+      // console.log(todos[i]);
+      todo = todos[i];
+      let ele =  createTodoComponent(todo);
+      let div = document.querySelector(".todos");
+      div.appendChild(ele);
+    }
+    }
+  </script>
+</html>

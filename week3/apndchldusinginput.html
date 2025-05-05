@@ -1,0 +1,24 @@
+<html>
+
+<body>
+    <input type="text" placeholder="add some containt">
+    <button class="btn">Add</button>
+</body>
+<script>
+    let addelement = ()=>{
+        
+        let inputele= document.querySelector("input");
+        console.log(inputele);
+        // let value = inputele.value + "<button >delete</button>";
+        // console.log(value);
+        let value = inputele.value;
+    
+        let addele = document.createElement("div");
+        // addele.innerHTML = value;
+        addele.innerHTML = "<div>" + value + "</div>" + "<button>delete</button>";       
+        document.querySelector("body").appendChild(addele);    
+    }
+    let btn = document.querySelector(".btn");
+    btn.addEventListener("click",addelement)
+</script>
+</html>

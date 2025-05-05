@@ -1,5 +1,7 @@
 const express = require("express");
 const cors = require("cors")
+const jwt = require("jsonwebtoken");
+const JWT_SECRET = "rinku";
 const app = express();
 
 const users = [];
@@ -42,7 +44,9 @@ app.post("/signin",function(req,res){
     const user = users.find(u => u.username === username && u.password === password)
 
     if(user){
-        let token = genereteToken();
+        let token = jwt.sign({
+            username:username
+        },JWT_SECRET);
         console.log(token)
         if(token){
             user.token = token
@@ -59,12 +63,16 @@ app.post("/signin",function(req,res){
 
 app.post('/me',function(req,res){
     const token = req.body.token
-  
-     const user = users.find(u => u.token === token)
+    const getToken = jwt.verify(token,JWT_SECRET)
+
+    const username = getToken.username;
+
+     const user = users.find(u => u.username === username)
 
      if(user){
         res.json({
-            username:user.username
+            username:user.username,
+            password:user.password
         })
      } else {
         res.status(401).json({ message: 'Invalid credentials' });

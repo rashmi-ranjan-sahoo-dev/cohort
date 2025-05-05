@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Authentication</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.7/axios.min.js"></script>
+</head>
+<body>
+    <div class="signup">
+        Signup
+        <input class="signup-username" type="text" name="username" placeholder="username">
+        <input class="signup-password"  type="password" name="password" placeholder="password">
+        <button onclick="signup()">Submit</button>
+    </div>
+    <div class="signin">
+        Signin
+        <input class="signin-username" type="text" name="username" placeholder="username">
+        <input class="signin-password"  type="password" name="password" placeholder="password">
+        <button onclick="signin()">Submit</button>
+    </div>
+    <div>
+        <h3>User information</h3>
+        <div class="information"></div>
+    </div>
+    <div>
+        <button onclick="lotout()">logut</button>
+    </div>
+    <script>
+        async function signup() {
+            let username = document.querySelector(".signup-username").value;
+            let password = document.querySelector(".signup-password").value;
+
+            const res = await axios.post("http://localhost:3000/signup",{
+                username:username,
+                password:password
+            })
+
+            alert("sigup successful");
+        }
+
+        async function signin() {
+    let username = document.getElementsByClassName("signin-username")[0].value;
+    let password = document.getElementsByClassName("signin-password")[0].value;
+
+    try {
+        const res = await axios.post("http://localhost:3000/signin", {
+            username: username,
+            password: password
+        });
+
+        localStorage.setItem("token", res.data.token);
+        console.log(res.data.token);
+        alert("Signin successful");
+        getUserInformation(); // Assuming this function exists
+    } catch (err) {
+        alert("Signin failed: " + err.response?.data?.message || "Server error");
+    }
+}
+
+
+        async function logout() {
+            localStorage.removeItem("token");
+        }
+        
+        async function getUserInformation() {
+            let token = localStorage.getItem("token");
+            console.log("token:",token)
+
+            let res =  await axios.post("http://localhost:3000/me",{
+                 token:token
+            })
+
+            document.querySelector(".information").innerHTML = res.data.username;
+        }
+
+    </script>
+</body>
+</html>

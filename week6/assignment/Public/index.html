@@ -51,8 +51,7 @@
 
         localStorage.setItem("token", res.data.token);
         console.log(res.data.token);
-        alert("Signin successful");
-        getUserInformation(); // Assuming this function exists
+        alert("Signin successful"); // Assuming this function exists
     } catch (err) {
         alert("Signin failed: " + err.response?.data?.message || "Server error");
     }
@@ -67,12 +66,15 @@
             let token = localStorage.getItem("token");
             console.log("token:",token)
 
-            let res =  await axios.post("http://localhost:3000/me",{
-                 token:token
+            let res =  await axios.get("http://localhost:3000/me",{
+                headers:{
+                    token:token
+                }
             })
 
             document.querySelector(".information").innerHTML = res.data.username;
         }
+        getUserInformation();
 
     </script>
 </body>

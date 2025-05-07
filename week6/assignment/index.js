@@ -1,15 +1,19 @@
 const express = require("express");
-const cors = require("cors")
+
 const jwt = require("jsonwebtoken");
 const JWT_SECRET = "rinku";
 const app = express();
 
 const users = [];
 
-app.use(cors());
 app.use(express.json());
 
+app.get("/",function(req,res){
+    res.sendFile(__dirname + "/Public/index.html")
+})
+
 app.post("/signup",function(req,res){
+    console.log("hi")
     const username = req.body.username
     const password = req.body.password
     
@@ -23,18 +27,6 @@ app.post("/signup",function(req,res){
     })
 })
 
-
- function genereteToken(){
-    let options = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
-
-    let token = "";
-
-    for(let i = 1; i<= 32 ; i++){
-        token += options[Math.floor(Math.random() * options.length)]
-    }
-
-    return token;
- }
 
 
 app.post("/signin",function(req,res){
@@ -61,8 +53,8 @@ app.post("/signin",function(req,res){
     })
 })
 
-app.post('/me',function(req,res){
-    const token = req.body.token
+app.get('/me',function(req,res){
+    const token = req.headers.token
     const getToken = jwt.verify(token,JWT_SECRET)
 
     const username = getToken.username;

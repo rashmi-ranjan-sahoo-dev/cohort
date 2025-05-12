@@ -1,5 +1,6 @@
 const express = require("express");
 const app = express();
+const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const JWT_SECRET = "rinku"
 const { UserModel , TodoModel}  = require('./db.js')
@@ -13,47 +14,75 @@ app.post("/signup",async function(req,res){
     const email = req.body.email;
     const password = req.body.password;
     const name = req.body.name;
+        try{
+         const hashedpassword = await bcrypt.hash(password,5);
+        
+            const r = await UserModel.create({
+                email:email,
+                password:hashedpassword,
+                name:name
+            })
+            console.log(hashedpassword);
+        
+            res.json({
+                message: "You are signed up"
+            })
+        }catch (error) {
+    console.error("Error during user signup:", error);
+    res.status(500).json({
+        message: "An error occurred during signup",
+        error: error.message
+    });
+}
 
-    const r = await UserModel.create({
-        email:email,
-        password:password,
-        name:name
-    })
-    console.log(r);
-
-    res.json({
-        message: "You are signed up"
-    })
 })
 
 app.post("/signin",async function(req,res){
       const email = req.body.email;
     const password = req.body.password;
+    console.log(password)
 
-   const response = await UserModel.findOne({
-    email:email,
-    password:password
-   })
-   console.log("first id ",response._id.toString());
-   if(response){
-    const token = jwt.sign({
-        id:response._id.toString()
+    try{
+        const response = await UserModel.findOne({
+        email:email,
+       })
+       console.log(response)
+       
+       if(!response){
+         res.status(403).json({
+             msg:"user not found"
+         })
+       }
+
+      const passwordMatch = await bcrypt.compare(password,response.password)
+
+       if(passwordMatch){
+        const token = jwt.sign({
+            id:response._id.toString()
+            
+        },JWT_SECRET)
         
-    },JWT_SECRET)
-    
-      res.json({
-        token
-      })
-   }else{
-    res.status(403).json({
-        message:"Incorrect creds"
-    })
-   }
+          res.json({
+            token
+          })
+       }else{
+        res.status(403).json({
+            message:"Incorrect creds"
+        })
+       }
+    }catch (error) {
+    console.error("Error during user signin:", error);
+    res.status(500).json({
+        message: "An error occurred during sign",
+        error: error.message
+    });
+}
+
 })
 
 function auth(req,res,next){
     const token = req.headers.token;
-
+try{
     const decodedData = jwt.verify(token,JWT_SECRET);
 
     if(decodedData){
@@ -65,6 +94,13 @@ function auth(req,res,next){
             message: "Incorrect creds"
         })
     }
+   }catch (error) {
+    console.error("Error during todo add:", error);
+    res.status(500).json({
+        message: "An error occurred during todo add",
+        error: error.message
+    });
+}
 }
 
 app.post("/todo",auth,async function(req,res){

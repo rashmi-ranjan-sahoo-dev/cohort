@@ -5,12 +5,34 @@ const jwt = require("jsonwebtoken");
 const JWT_SECRET = "rinku"
 const { UserModel , TodoModel}  = require('./db.js')
 const mongoose = require("mongoose");
+const { z } = require("zod");
+
 
 mongoose.connect("mongodb+srv://rinkuasahoo04:rinku1234@cluster0.9as9pzb.mongodb.net/todo");
 app.use(express.json());
 
 
 app.post("/signup",async function(req,res){
+
+    const validedData = z.object({
+        email:z.string().min(4).max(30).email(),
+        password:z.string().min(8).regex(/[A-Z]/, "Password must include at least one uppercase letter")
+                                  .regex(/[a-z]/, "Password must include at least one lowercase letter")
+                                  .regex(/[0-9]/, "Password must include at least one number")
+                                  .regex(/[^A-Za-z0-9]/, "Password must include at least one special character"),
+        name:z.string()                         
+    })
+
+    const parsedDataWithsuccess = validedData.safeParse(req.body);
+
+    if(!parsedDataWithsuccess.success){
+        res.json({
+            msg:"incorest format",
+            error:parsedDataWithsuccess.error
+        })
+        return
+    }
+
     const email = req.body.email;
     const password = req.body.password;
     const name = req.body.name;
@@ -54,7 +76,7 @@ app.post("/signin",async function(req,res){
          })
        }
 
-      const passwordMatch = await bcrypt.compare(password,response.password)
+      const passwordMatch = bcrypt.compare(password, response.password)
 
        if(passwordMatch){
         const token = jwt.sign({

@@ -1,9 +1,10 @@
 const { Router } = require("express");
-const { userModel } = require("../db/db");
+const { userModel, purchaseModel, courseModel } = require("../db/db");
 const { z } = require("zod");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken")
 const JWT_USER = require("../config.js")
+const { userMiddleWare } = require("../middleware/userMId.js")
 
 const userRouter = Router();
 
@@ -70,15 +71,13 @@ userRouter.post("/signin",async function (req,res) {
 
     if(!parsedDataWithsuccess.success){
          res.json({
-            msg:"incorext format",
+            msg:"incorect format",
             error:parsedDataWithsuccess.error
         })
         return
     }
 
     const { email,password} = req.body;
-
-    console.log(email , "+" , password)
 
     try{
         const response = await userModel.findOne({
@@ -97,11 +96,7 @@ userRouter.post("/signin",async function (req,res) {
 
         // console.log(passwordMatch)
 
-        console.log(JWT_USER.JWT_USER_SECRET)
-
         if(passwordMatch){
-
-            console.log(response._id.toString())
             const token = jwt.sign({id:response._id},JWT_USER.JWT_USER_SECRET)
 
             res.json({
@@ -121,8 +116,29 @@ userRouter.post("/signin",async function (req,res) {
 }
 })
 
-userRouter.get("/purchases",async function (req,res) {
+userRouter.get("/purchases",userMiddleWare,async function (req,res) {
     
+  const userId = req.userId;
+
+  const courses = await purchaseModel.find({
+    userId
+  })
+
+  let purchaseCourseIds = [];
+
+  for(let i = 0 ; i< courses.length ;i++){
+    purchaseCourseIds.push(courses[i].courseId)
+  }
+
+  const courseData = await courseModel.find({
+    _id: { $in: purchaseCourseIds }
+  })
+
+  res.json({
+    courses,
+    courseData
+  })
+
 })
 
 module.exports = {

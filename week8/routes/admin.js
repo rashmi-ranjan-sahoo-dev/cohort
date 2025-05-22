@@ -1,4 +1,4 @@
-const { Router } = require("express")
+const { Router, json } = require("express")
 const adminRouter = Router();
 const { adminModel, courseModel } = require("../db/db.js")
 const { z } = require("zod");
@@ -70,10 +70,10 @@ adminRouter.post("/signin",async function (req,res){
     const parsedDataWithsuccess = validedData.safeParse(req.body);
 
     if(!parsedDataWithsuccess.success){
-         res.json({
-            msg:"incorext format",
-            error:parsedDataWithsuccess.error
-        })
+       res.json({
+        msg:"increct format",
+        error:parsedDataWithsuccess.error
+       })
         return
     }
 
@@ -115,13 +115,13 @@ adminRouter.post("/course",adminMiddleWare,async function (req,res){
     
     const adminId = req.userId;
 
-    const { title, description, imageUrl, price,creatorId} = req.body
+    const { title, description, imageUrl, price} = req.body
 
     const course = await courseModel.create({
         title:title,
         description:description,
         price:price,
-        creatorId:creatorId,
+        creatorId:adminId,
         imageUrl:imageUrl
     })
 
@@ -133,17 +133,62 @@ adminRouter.post("/course",adminMiddleWare,async function (req,res){
 
 }); 
 
-adminRouter.put("/course",async function (req,res){
+adminRouter.put("/course",adminMiddleWare,async function (req,res){
+
+    const adminId = req.userId;
+    console.log(adminId)
+
+    const { title, description,price,imageUrl,courseId} = req.body;
+
+    const course = await courseModel.updateOne({
+        _id:courseId,
+        creatorId:adminId
+    },{
+        title:title,
+        description:description,
+        imageUrl:imageUrl,
+        price:price
+    })
+
+    res.json({
+        message:"Course updated",
+        course:course
+    })
     
 }); 
 
-adminRouter.get("/course/bulk",async function (req,res){
-    
+adminRouter.get("/course/bulk",adminMiddleWare,async function (req,res){
+
+    const adminId = req.userId
+
+    const courses = await courseModel.find({
+        creatorId:adminId
+    })
+
+    res.json({
+        courses
+    })
 }); 
 
-adminRouter.delete("/course",async function (req,res){
+adminRouter.delete("/course",adminMiddleWare,async function (req,res){
+
+    const adminId = req.userId;
+    const courseId = req.body.courseId;
     
+    const course = await courseModel.deleteOne({ _id: courseId,creatorId:adminId})
+    
+  if(course){
+     const courses = await courseModel.find({
+        creatorId:adminId
+    })
+
+    res.json({
+        courses
+    })
+  }
 }); 
+
+
 
 module.exports = {
     adminRouter: adminRouter

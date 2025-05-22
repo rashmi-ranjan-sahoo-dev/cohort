@@ -5,6 +5,7 @@ const userMiddleWare = (req,res,next) =>{
     const token = req.headers.token;
     
     const decoded =  jwt.verify(token,JWT_USER_SECRET);
+    console.log(JWT_USER_SECRET);
 
     if(decoded){
       req.userId = decoded.id;

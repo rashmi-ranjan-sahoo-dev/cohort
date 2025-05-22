@@ -39,7 +39,7 @@ app.post("/signup",async function(req,res){
         try{
          const hashedpassword = await bcrypt.hash(password,5);
         
-            const r = await UserModel.create({
+            const r = await UscerModel.create({
                 email:email,
                 password:hashedpassword,
                 name:name
@@ -60,10 +60,8 @@ app.post("/signup",async function(req,res){
 })
 
 app.post("/signin",async function(req,res){
-      const email = req.body.email;
+    const email = req.body.email;
     const password = req.body.password;
-    console.log(password)
-
     try{
         const response = await UserModel.findOne({
         email:email,

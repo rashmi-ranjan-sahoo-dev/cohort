@@ -111,7 +111,7 @@ try{
         next();
     }else {
         res.status(403).json({
-            message: "Incorrect creds"
+            msg: "Incorrect credentials"
         })
     }
    }catch (error) {

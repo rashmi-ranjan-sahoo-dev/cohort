@@ -22,7 +22,15 @@ const courseSchema = new Schema({
     description: String,
     price: Number,
     imageUrl: String,
-    creatorId: ObjectId
+    creatorId: ObjectId,
+     videos: [
+        {
+            title: String,
+            url: String,
+            duration: Number, // in seconds (optional)
+            isPreview: { type: Boolean, default: false } // optional
+        }
+    ]
 });
 
 const purchaseSchema = new Schema({

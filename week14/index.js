@@ -1,0 +1,23 @@
+"use strict";
+let x = 1;
+console.log(x);
+function greet(firstName) {
+    console.log("Hello" + firstName);
+}
+greet("rinku");
+function sum(a, b) {
+    return a + b;
+}
+console.log(sum(2, 3));
+function isLigal(a) {
+    if (a < 18)
+        return false;
+    return true;
+}
+console.log(isLigal(14));
+function delayedCall(fn) {
+    setInterval(fn, 1000);
+}
+delayedCall(function () {
+    console.log("hello");
+});

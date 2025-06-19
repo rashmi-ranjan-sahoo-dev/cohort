@@ -1,9 +1,9 @@
-interface User {
+interface Usr {
     name: string;
     age: number;
 }
 
-function sumOfAge(user1: User, user2: User){
+function sumOfAge(user1: Usr, user2: Usr){
     return user1.age + user2.age;
 }
 

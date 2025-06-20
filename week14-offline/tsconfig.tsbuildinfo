@@ -1,1 +1,1 @@
-{"root":["./src/index.ts","./src/partial.ts","./src/pick.ts","./src/readonly.ts"],"version":"5.8.3"}
+{"root":["./src/exclude.tsx","./src/index.ts","./src/map.ts","./src/partial.ts","./src/pick.ts","./src/reacord.ts","./src/readonly.ts","./src/zod.ts"],"version":"5.8.3"}

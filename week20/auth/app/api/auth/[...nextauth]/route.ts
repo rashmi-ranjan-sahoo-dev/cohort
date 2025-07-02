@@ -22,14 +22,12 @@ const handler = NextAuth({
         }
 
         if(user) return user;
-        else return null'
-
-        // TODO: Add logic to verify user here
-
-       // return null; // or return { id: "1", name: "User" } if valid
+        else return null;
       },
     }),
   ],
+  secret: process.env.NEXTAUTH_SECRET
+
 });
 
 export { handler as GET, handler as POST };

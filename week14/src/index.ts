@@ -28,3 +28,10 @@ function delayedCall(fn: () => void) {
 delayedCall(function(){
     console.log("hello")
 })
+
+function getFiEle<T>(arr:T[]){
+    return arr[0];
+}
+
+const el = getFiEle(["rinku","sahoo"]);
+console.log(el.toLowerCase());

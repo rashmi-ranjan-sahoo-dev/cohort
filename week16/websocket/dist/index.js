@@ -4,11 +4,14 @@ const ws_1 = require("ws");
 const wss = new ws_1.WebSocketServer({ port: 8080 });
 //event handler
 wss.on("connection", function (socket) {
-    console.log("user connected");
-    setInterval(() => {
-        socket.send("current prise of solana : " + Math.floor(Math.random() * 10 + 1));
-    }, 3000);
+    // console.log("user connected");
+    // setInterval(()=>{
+    //    socket.send("current prise of solana : "+ Math.floor(Math.random() * 10 + 1) )
+    // },3000)
     socket.on("message", (e) => {
         console.log(e.toString());
+        if (e.toString() === 'ping') {
+            socket.send("Pong");
+        }
     });
 });
